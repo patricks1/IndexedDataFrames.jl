@@ -1,14 +1,14 @@
-# IndexedDFs
+# IndexedDataFrames
 A small package to allow Julia `DataFrames` to have meaningful row indices.  
 
-Create an `IndexedDF` by feeding a `DataFrames.DataFrame` into `IndexedDFs.IndexedDF` and specifying the index column. For example,
+Create an `IndexedDataFrame` by feeding a `DataFrames.DataFrame` into `IndexedDataFrames.IndexedDataFrame` and specifying the index column. For example,
 ```julia
 import DataFrames
-import IndexedDFs
+import IndexedDataFrames
 df = DataFrames.DataFrame(id=[100, 200, 300], a=[1, 2, 3], b=[4, 5, 6])
-idf = IndexedDFs.IndexedDF(df, "id")
+idf = IndexedDataFrames.IndexedDataFrame(df, "id")
 ```
-The `IndexedDF` then behaves much like a regular `DataFrames.DataFrame`, although I haven't made an exhaustive effort to cover all the overloads. For example, the user could build on `idf` with
+The `IndexedDataFrame` then behaves much like a regular `DataFrames.DataFrame`, although I haven't made an exhaustive effort to cover all the overloads. For example, the user could build on `idf` with
 ```julia
 idf[400] = (a=7, b=8)
 idf[500] = Dict("a" => 9, "b" => 10)
@@ -21,7 +21,7 @@ println(idf[300])
 etcetera.
 ```
 # Output
-IndexedDF with index column id:
+IndexedDataFrame with index column id:
 5×4 DataFrame
  Row │ id     a      b      c     
      │ Int64  Int64  Int64  Int64 
@@ -38,4 +38,4 @@ DataFrameRow
    2 │   300      3      6     13
 ```
 
-The `IndexedDF` has the underlying `DataFrames.DataFrame` as an attribute called `df`. However, be cautions about manually modifying that. Things like `IndexedDFs.check_uniqueness` don't run when you do that until the next time you access the `IndexedDF`. In some cases, I might not have built out the specific overload you're looking for, so you'll have to access the underlying `DataFrame`. Just be careful with what you do. Don't make a new row with the same index value as one that already exists.
+The `IndexedDataFrame` has the underlying `DataFrames.DataFrame` as an attribute called `df`. However, be cautions about manually modifying that. Things like `IndexedDataFrames.check_uniqueness` don't run when you do that until the next time you access the `IndexedDataFrame`. In some cases, I might not have built out the specific overload you're looking for, so you'll have to access the underlying `DataFrame`. Just be careful with what you do. Don't make a new row with the same index value as one that already exists.

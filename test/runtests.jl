@@ -1,9 +1,9 @@
 import Test
 import DataFrames
-import IndexedDFs 
+import IndexedDataFrames 
 
 df = DataFrames.DataFrame(id=[100, 200, 300], a=[1, 2, 3], b=[4, 5, 6])
-idf = IndexedDFs.IndexedDF(df, "id")
+idf = IndexedDataFrames.IndexedDataFrame(df, "id")
 
 Test.@testset "Adding a row via push!" begin
     println("Starting pushing")
@@ -15,7 +15,7 @@ Test.@testset "Adding a row via push!" begin
         a=[1, 2, 3, 7, 9],
         b=[4, 5, 6, 8, 10]
     )
-    test_idf = IndexedDFs.IndexedDF(testdf, "id")
+    test_idf = IndexedDataFrames.IndexedDataFrame(testdf, "id")
     Test.@test test_idf.df == idf.df
 end
 
@@ -28,7 +28,7 @@ Test.@testset "Adding a row via setindex!" begin
         a=[1, 2, 3, 7, 9, 11, 13],
         b=[4, 5, 6, 8, 10, 12, 14]
     )
-    testidf = IndexedDFs.IndexedDF(testdf, "id")
+    testidf = IndexedDataFrames.IndexedDataFrame(testdf, "id")
     Test.@test testidf.df == idf.df
 end
 
@@ -47,7 +47,7 @@ Test.@testset "Replace a column" begin
         a=[1, 2, 3, 7, 9, 11, 13],
         b=[14, 15, 16, 18, 100, 112, 114]
     )
-    test_idf = IndexedDFs.IndexedDF(test_df, "id")
+    test_idf = IndexedDataFrames.IndexedDataFrame(test_df, "id")
     Test.@test test_idf.df == idf.df
 end
 
@@ -60,26 +60,26 @@ Test.@testset "Add a column" begin
         b=[14, 15, 16, 18, 100, 112, 114],
         c=[14, 15, 16, 18, 100, 112, 114]
     )
-    test_idf = IndexedDFs.IndexedDF(test_df, "id")
+    test_idf = IndexedDataFrames.IndexedDataFrame(test_df, "id")
     Test.@test test_idf.df == idf.df
 end
 
 Test.@testset "Not allowing duplicate indices" begin
-    # Cannot create an IndexedDF from a DataFrame with duplicate values in the
+    # Cannot create an IndexedDataFrame from a DataFrame with duplicate values in the
     # index column.
     df2 = DataFrames.DataFrame(
         id=["a", "b", "c", "a"],
         col1=[1, 2, 3, 4],
         col2=[5, 6, 7, 8]
     )
-    Test.@test_throws DomainError idf2 = IndexedDFs.IndexedDF(df2, "id")
+    Test.@test_throws DomainError idf2 = IndexedDataFrames.IndexedDataFrame(df2, "id")
     
     # Changing the index value to one that already exists is not allowed.
     Test.@test_throws ArgumentError idf[200, "id"] = 100
 
     # Messing with the underlying DataFrame won't show an error initially, but
-    # we catch it when we subsequently work with the IndexedDF via
-    # IndexedDF.check_uniqueness, which most overloads incorporate.
+    # we catch it when we subsequently work with the IndexedDataFrame via
+    # IndexedDataFrame.check_uniqueness, which most overloads incorporate.
     push!(idf.df, (id=200, a=15, b=16, c=17))
     Test.@test_throws DomainError println(idf)
     Test.@test_throws DomainError idf[900] = (a=17, b=18, c=19)
